@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "",
+  "buildCommand": "",
+  "cleanUrls": false,
+  "functions": {
+    "api/**/*.py": {
+      "maxDuration": 30,
+      "includeFiles": "{data/**,lib/**}",
+      "excludeFiles": "{media/**,__pycache__/**,**/*.mp4,.git/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/data/admin.json", "destination": "/api/denied" },
+    { "source": "/data/RECOVERY.txt", "destination": "/api/denied" },
+    { "source": "/data/admin.json.tmp", "destination": "/api/denied" }
+  ],
+  "headers": [
+    {
+      "source": "/admin.html",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/data/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    }
+  ]
+}

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-MZ">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Painel GRAPHIK ONE</title>
+<style>
+:root{
+  --bg:#0c0714; --panel:#160a24; --line:rgba(255,255,255,.12); --txt:#f4eefc;
+  --muted:rgba(255,255,255,.62); --grad:linear-gradient(135deg,#FF8A1F,#FF1F7D 55%,#8E3CF7);
+  --amarelo:#FFB627; --ok:#35d07f; --err:#ff6b6b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(900px 500px at 90% -10%,rgba(142,60,247,.28),transparent 55%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--amarelo)}
+img{max-width:100%;display:block}
+.hidden{display:none!important}
+
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden}
+.login::before{content:"";position:absolute;inset:-20%;background:radial-gradient(500px 280px at 20% 10%,rgba(255,31,125,.22),transparent 55%),radial-gradient(420px 240px at 90% 90%,rgba(142,60,247,.28),transparent 50%);pointer-events:none}
+.login-card{position:relative;width:min(440px,100%);background:linear-gradient(180deg,rgba(28,14,48,.96),rgba(16,8,28,.94));border:1px solid var(--line);border-radius:26px;padding:36px 32px 28px;box-shadow:0 30px 80px -40px #000}
+.login-card .mark{width:52px;height:52px;border-radius:16px;background:var(--grad);display:grid;place-items:center;margin-bottom:18px;box-shadow:0 12px 28px -12px #FF1F7D}
+.login-card img{height:40px;margin-bottom:16px}
+.login-card h1{font-size:1.35rem;margin:0 0 6px;letter-spacing:.2px}
+.login-card .sub{margin:0 0 22px;color:var(--muted);font-size:.92rem}
+.login-card .pw-wrap{position:relative}
+.login-card .pw-wrap input{padding-right:46px}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--muted);cursor:pointer;padding:6px}
+.linkish{background:none;border:0;color:var(--amarelo);cursor:pointer;padding:0;font-size:.86rem}
+.okmsg{color:#8ef0bd;font-size:.86rem;margin-top:10px;min-height:1.2em}
+.codebox{font-family:ui-monospace,Menlo,monospace;letter-spacing:2px;font-size:1.1rem;padding:12px;border-radius:12px;background:rgba(13,7,22,.7);border:1px dashed var(--amarelo);text-align:center;margin:10px 0}
+label{display:block;font-size:.82rem;margin:0 0 6px;color:var(--muted)}
+input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(13,7,22,.55);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--amarelo)}
+textarea{min-height:88px;resize:vertical}
+.btn{appearance:none;border:0;cursor:pointer;padding:11px 18px;border-radius:999px;font-weight:600}
+.btn-grad{background:var(--grad);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--line)}
+.btn-danger{background:rgba(255,107,107,.16);color:#ffb3b3;border:1px solid rgba(255,107,107,.35)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.err{color:#ffb3b3;font-size:.84rem;min-height:1.2em;margin-top:10px}
+
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+.side{background:rgba(22,10,36,.86);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:8px}
+.side img{height:36px;margin:4px 8px 18px}
+.nav-btn{text-align:left;background:transparent;border:0;color:var(--muted);padding:11px 12px;border-radius:12px;cursor:pointer}
+.nav-btn.active,.nav-btn:hover{background:rgba(255,255,255,.06);color:#fff}
+.side .grow{flex:1}
+.main{padding:28px 28px 80px;max-width:1180px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+.top h1{margin:0;font-size:1.35rem}
+.hint{color:var(--muted);font-size:.88rem;margin:0 0 18px}
+.grid{display:grid;gap:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:rgba(22,10,36,.72);border:1px solid var(--line);border-radius:16px;padding:14px;display:grid;gap:10px}
+.thumb{height:150px;border-radius:12px;background:#0a0512;overflow:hidden;border:1px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-size:.82rem;position:relative}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.swatch{display:flex;align-items:center;gap:10px}
+.swatch input[type=color]{width:52px;height:40px;padding:0;border:0;background:none;cursor:pointer}
+.palette-preview{height:18px;border-radius:99px;margin-top:4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.file{position:relative;overflow:hidden}
+.file input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.toast{position:fixed;right:18px;bottom:18px;z-index:20;padding:12px 16px;border-radius:12px;background:#160a24;border:1px solid var(--line);display:none}
+.toast.show{display:block}
+.toast.ok{border-color:rgba(53,208,127,.5);color:#8ef0bd}
+.toast.err{border-color:rgba(255,107,107,.5);color:#ffb3b3}
+.hours{display:grid;gap:8px}
+.hours-row{display:grid;grid-template-columns:120px 1fr 1fr;gap:8px;align-items:center}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .side .grow{display:none}
+  .row,.hours-row{grid-template-columns:1fr}
+  .main{padding:18px 14px 70px}
+}
+</style>
+</head>
+<body>
+<div class="login" id="login-view">
+  <form class="login-card" id="login-form">
+    <div class="mark" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+    </div>
+    <img src="media/logo-horizontal-white.png" alt="GRAPHIK ONE" />
+    <h1>Painel de administracao</h1>
+    <p class="sub">Acesso reservado. Edite o site, produtos, servicos e identidade da grafica.</p>
+    <label for="password">Palavra-passe</label>
+    <div class="pw-wrap">
+      <input id="password" type="password" autocomplete="current-password" required />
+      <button class="eye" type="button" id="toggle-pw" aria-label="Mostrar palavra-passe">mostrar</button>
+    </div>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-grad" type="submit">Entrar</button>
+      <a class="btn btn-ghost" href="index.html">Ver o site</a>
+    </div>
+    <p style="margin:16px 0 0"><button type="button" class="linkish" id="show-recover">Esqueci a palavra-passe</button></p>
+    <div class="err" id="login-err"></div>
+  </form>
+  <form class="login-card hidden" id="recover-form">
+    <img src="media/logo-horizontal-white.png" alt="" />
+    <h1>Recuperar acesso</h1>
+    <p class="sub">Introduza o codigo de recuperacao (8 caracteres) e defina uma nova palavra-passe. O codigo aparece na primeira entrada no painel e na aba Seguranca.</p>
+    <label for="rec-code">Codigo de recuperacao</label>
+    <input id="rec-code" autocomplete="off" required maxlength="16" />
+    <label for="rec-next">Nova palavra-passe</label>
+    <input id="rec-next" type="password" minlength="6" required />
+    <div class="actions" style="margin-top:16px">
+      <button class="btn btn-grad" type="submit">Repor palavra-passe</button>
+      <button class="btn btn-ghost" type="button" id="back-login">Voltar</button>
+    </div>
+    <div class="err" id="recover-err"></div>
+    <div class="okmsg" id="recover-ok"></div>
+  </form>
+</div>
+
+<div class="app hidden" id="app-view">
+  <aside class="side">
+    <img src="media/logo-horizontal-white.png" alt="" />
+    <button class="nav-btn active" data-tab="empresa">Empresa</button>
+    <button class="nav-btn" data-tab="identidade">Logos e identidade</button>
+    <button class="nav-btn" data-tab="textos">Textos da pagina</button>
+    <button class="nav-btn" data-tab="servicos">Servicos</button>
+    <button class="nav-btn" data-tab="produtos">Produtos</button>
+    <button class="nav-btn" data-tab="trabalhos">Trabalhos</button>
+    <button class="nav-btn" data-tab="videos">Videos</button>
+    <button class="nav-btn" data-tab="processo">Processo</button>
+    <button class="nav-btn" data-tab="parceiros">Parceiros</button>
+    <button class="nav-btn" data-tab="horario">Horario</button>
+    <button class="nav-btn" data-tab="seguranca">Seguranca</button>
+    <div class="grow"></div>
+    <a class="nav-btn" href="index.html" target="_blank">Abrir o site</a>
+    <button class="nav-btn" id="logout">Sair</button>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <h1 id="page-title">Empresa</h1>
+      <div class="actions">
+        <button class="btn btn-ghost" id="reload">Recarregar</button>
+        <button class="btn btn-grad" id="save">Guardar alteracoes</button>
+      </div>
+    </div>
+    <p class="hint" id="page-hint"></p>
+    <div id="panels"></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS = [
+  { id: 'grafica', label: 'Grafica' },
+  { id: 'serigrafia', label: 'Serigrafia e Bordados' },
+  { id: 'papelaria', label: 'Papelaria' }
+];
+const DAYS = [
+  ['1', 'Segunda'], ['2', 'Terca'], ['3', 'Quarta'],
+  ['4', 'Quinta'], ['5', 'Sexta'], ['6', 'Sabado'], ['0', 'Domingo']
+];
+const TABS = {
+  empresa: ['Empresa', 'Nome, contactos, localizacao, redes e texto Sobre nos. Tudo o que guardar aparece no site.'],
+  identidade: ['Logos e identidade', 'Logotipos, favicon, imagem de partilha e paleta de cores. O visitante troca claro/escuro no menu; as cores da marca aplicam-se em todo o site.'],
+  textos: ['Textos da pagina', 'Titulos e descricoes de cada seccao (PT e EN). Hero, slogan, faixa e SEO.'],
+  servicos: ['Servicos', 'Titulo, descricao, lista e icone de cada servico. O icone pode ser automatico (pelo nome) ou escolhido na lista.'],
+  produtos: ['Produtos', 'Foto, nome PT/EN, descricao e categoria. Adicione ou substitua itens.'],
+  trabalhos: ['Trabalhos', 'Galeria de trabalhos (foto, nome, descricao, categoria).'],
+  videos: ['Videos', 'Miniatura, ficheiro MP4 e titulo PT/EN.'],
+  processo: ['Processo', 'Passos "Do briefing a entrega". Adicione, edite ou remova.'],
+  parceiros: ['Parceiros', 'Logotipos do carrossel. Use PNG/SVG com fundo transparente.'],
+  horario: ['Horario', 'Horario de funcionamento (deixe vazio para fechado).'],
+  seguranca: ['Seguranca', 'Altere a palavra-passe e veja o codigo de recuperacao.']
+};
+const ICONS = [
+  ['grafica', 'Grafica / impressao'],
+  ['serigrafia', 'Serigrafia / tecido'],
+  ['papelaria', 'Papelaria'],
+  ['desporto', 'Desporto'],
+  ['informatica', 'Informatica'],
+  ['web', 'Web / digital'],
+  ['design', 'Design'],
+  ['foto', 'Fotografia'],
+  ['video', 'Video'],
+  ['evento', 'Eventos'],
+  ['educacao', 'Educacao'],
+  ['moda', 'Moda'],
+  ['auto', 'Automovel'],
+  ['saude', 'Saude'],
+  ['musica', 'Musica'],
+  ['construcao', 'Construcao'],
+  ['alimentacao', 'Alimentacao'],
+  ['comunicacao', 'Comunicacao']
+];
+
+let token = sessionStorage.getItem('gk-admin-token') || '';
+let catalog = null;
+let tab = 'empresa';
+
+const $ = (s, ctx = document) => ctx.querySelector(s);
+const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
+
+function toast(text, kind) {
+  const el = $('#toast');
+  el.textContent = text;
+  el.className = 'toast show ' + (kind || '');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+function headers(extra) {
+  return Object.assign({ 'X-Admin-Token': token }, extra || {});
+}
+
+async function api(url, opts) {
+  const res = await fetch(url, opts);
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    token = '';
+    sessionStorage.removeItem('gk-admin-token');
+    showLogin();
+    throw new Error(data.error || 'Sessao expirada.');
+  }
+  if (!res.ok || data.ok === false) throw new Error(data.error || 'Pedido falhou.');
+  return data;
+}
+
+function showLogin() {
+  $('#login-view').classList.remove('hidden');
+  $('#app-view').classList.add('hidden');
+  $('#login-form').classList.remove('hidden');
+  $('#recover-form').classList.add('hidden');
+}
+function showApp() {
+  $('#login-view').classList.add('hidden');
+  $('#app-view').classList.remove('hidden');
+}
+
+function field(label, html) {
+  return `<label>${label}${html}</label>`;
+}
+function inp(key, val, type) {
+  return `<input data-k="${key}" type="${type || 'text'}" value="${esc(val || '')}" />`;
+}
+function area(key, val) {
+  return `<textarea data-k="${key}">${esc(val || '')}</textarea>`;
+}
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function thumb(src, video) {
+  if (!src) return `<div class="thumb">Sem ficheiro</div>`;
+  if (video) return `<div class="thumb"><video src="${esc(src)}" muted></video></div>`;
+  return `<div class="thumb"><img src="${esc(src)}" alt="" /></div>`;
+}
+
+function uploadBtn(folder, target) {
+  return `<label class="btn btn-ghost file">Trocar ficheiro
+    <input type="file" data-upload="${folder}" data-target="${target}" accept="${folder === 'video' ? 'image/*,video/mp4,video/webm' : 'image/*'}" />
+  </label>`;
+}
+
+function render() {
+  if (!catalog) return;
+  const panels = $('#panels');
+  $('#page-title').textContent = TABS[tab][0];
+  $('#page-hint').textContent = TABS[tab][1];
+  $$('.nav-btn[data-tab]').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
+
+  if (tab === 'empresa') panels.innerHTML = companyForm();
+  else if (tab === 'identidade') panels.innerHTML = identityForm();
+  else if (tab === 'textos') panels.innerHTML = copyForm();
+  else if (tab === 'servicos') panels.innerHTML = listForm('services', serviceCard, 'Adicionar servico');
+  else if (tab === 'produtos') panels.innerHTML = listForm('products', productCard, 'Adicionar produto');
+  else if (tab === 'trabalhos') panels.innerHTML = listForm('works', workCard, 'Adicionar trabalho');
+  else if (tab === 'videos') panels.innerHTML = listForm('videos', videoCard, 'Adicionar video');
+  else if (tab === 'processo') panels.innerHTML = listForm('process', processCard, 'Adicionar passo');
+  else if (tab === 'parceiros') panels.innerHTML = listForm('partners', partnerCard, 'Adicionar parceiro');
+  else if (tab === 'horario') panels.innerHTML = hoursForm();
+  else panels.innerHTML = securityForm();
+
+  bindPanel(panels);
+}
+
+function companyForm() {
+  const c = catalog.company || {};
+  return `<div class="grid">
+    <div class="card">${thumb(c.aboutImg)}
+      ${uploadBtn('site', 'company.aboutImg')}
+      ${field('Fotografia Sobre nos', inp('company.aboutImg', c.aboutImg))}
+    </div>
+    <div class="card">
+      <div class="row">
+        ${field('Nome da empresa (aparece em todo o site)', inp('company.name', c.name))}
+        ${field('Nome curto', inp('company.shortName', c.shortName))}
+      </div>
+      <div class="row">
+        ${field('Cidade', inp('company.city', c.city))}
+        ${field('Regiao / pais', inp('company.country', c.country))}
+      </div>
+      <div class="row">
+        ${field('E-mail', inp('company.email', c.email, 'email'))}
+        ${field('Website', inp('company.website', c.website))}
+      </div>
+      <div class="row">
+        ${field('WhatsApp (sem +)', inp('company.whatsapp', c.whatsapp))}
+        ${field('Telefone secundario', inp('company.phoneSecondary', c.phoneSecondary))}
+      </div>
+      ${field('Telefones (separados por virgula)', inp('company.phones', (c.phones || []).join(', ')))}
+      ${field('Localizacao', inp('company.address', c.address))}
+      ${field('Pesquisa do mapa', inp('company.mapsQuery', c.mapsQuery))}
+      <div class="row">
+        ${field('Pagina de Facebook', inp('company.facebookPage', c.facebookPage))}
+        ${field('Messenger', inp('company.messenger', c.messenger))}
+      </div>
+      ${field('Instagram (utilizador)', inp('company.instagram', c.instagram))}
+      ${field('Titulo Sobre nos (PT)', inp('company.aboutTitle', c.aboutTitle))}
+      ${field('Titulo Sobre nos (EN)', inp('company.aboutTitleEn', c.aboutTitleEn))}
+      ${field('Texto Sobre nos (PT)', area('company.aboutLead', c.aboutLead))}
+      ${field('Texto Sobre nos (EN)', area('company.aboutLeadEn', c.aboutLeadEn))}
+      ${field('Nota (PT)', area('company.aboutNote', c.aboutNote))}
+      ${field('Nota (EN)', area('company.aboutNoteEn', c.aboutNoteEn))}
+      <div class="row">
+        ${field('Anos', inp('company.years', c.years, 'number'))}
+        ${field('Projectos', inp('company.projects', c.projects, 'number'))}
+        ${field('Clientes', inp('company.clients', c.clients, 'number'))}
+        ${field('Tipos de produto', inp('company.productTypes', c.productTypes, 'number'))}
+      </div>
+      ${field('Legenda dos anos (PT)', inp('company.yearsCaption', c.yearsCaption))}
+      ${field('Legenda dos anos (EN)', inp('company.yearsCaptionEn', c.yearsCaptionEn))}
+    </div>
+  </div>`;
+}
+
+function identityForm() {
+  const c = catalog.company || {};
+  const theme = c.theme || {};
+  const slot = (key, label) => `<div class="card">${thumb(c[key])}
+    ${uploadBtn('site', 'company.' + key)}
+    ${field(label, inp('company.' + key, c[key]))}
+  </div>`;
+  const color = (key, fallback, label) => {
+    const val = theme[key] || fallback;
+    return `<div class="card">${field(label, `<div class="swatch"><input data-k="company.theme.${key}" type="color" value="${esc(val)}" /><input data-k="company.theme.${key}" type="text" value="${esc(val)}" /></div>`)}</div>`;
+  };
+  return `<div class="cards">
+    ${slot('logo', 'Logotipo vertical (preloader)')}
+    ${slot('logoNav', 'Logotipo horizontal (menu)')}
+    ${slot('logoWhite', 'Logotipo branco (rodape)')}
+    ${slot('logoMark', 'Simbolo / avatar Facebook')}
+    ${slot('favicon', 'Favicon')}
+    ${slot('ogImage', 'Imagem de partilha (Open Graph)')}
+  </div>
+  <h3 style="margin:28px 0 8px">Paleta da marca</h3>
+  <p class="hint">Estas cores pintam botoes, degradés e acentos. O visitante escolhe tema claro ou escuro no menu do site.</p>
+  <div class="cards">
+    ${color('magenta', '#FF1F7D', 'Magenta / principal')}
+    ${color('laranja', '#FF8A1F', 'Laranja')}
+    ${color('roxo', '#8E3CF7', 'Roxo')}
+    ${color('amarelo', '#FFB627', 'Amarelo / destaque')}
+    ${color('vinho', '#6B0F5E', 'Vinho / fundo profundo')}
+  </div>`;
+}
+
+const COPY_FIELDS = [
+  ['heroLead', 'Hero - texto principal PT'],
+  ['heroLeadEn', 'Hero - texto principal EN'],
+  ['heroSub', 'Hero - subtitulo PT'],
+  ['heroSubEn', 'Hero - subtitulo EN'],
+  ['heroLine1', 'Hero linha 1 PT'],
+  ['heroLine1En', 'Hero linha 1 EN'],
+  ['heroLine2', 'Hero linha 2 PT'],
+  ['heroLine2En', 'Hero linha 2 EN'],
+  ['heroLine3', 'Hero linha 3 PT'],
+  ['heroLine3En', 'Hero linha 3 EN'],
+  ['heroLine4', 'Hero linha 4 PT'],
+  ['heroLine4En', 'Hero linha 4 EN'],
+  ['badge1', 'Etiqueta 1 PT'],
+  ['badge1En', 'Etiqueta 1 EN'],
+  ['badge2', 'Etiqueta 2 PT'],
+  ['badge2En', 'Etiqueta 2 EN'],
+  ['tagline', 'Slogan PT'],
+  ['taglineEn', 'Slogan EN'],
+  ['marquee', 'Faixa animada PT (separe com · )'],
+  ['marqueeEn', 'Faixa animada EN'],
+  ['sealRing', 'Texto do selo circular PT'],
+  ['sealRingEn', 'Texto do selo circular EN'],
+  ['footerBlurb', 'Texto do rodape PT'],
+  ['footerBlurbEn', 'Texto do rodape EN'],
+  ['fbCardText', 'Texto do cartao Facebook PT'],
+  ['fbCardTextEn', 'Texto do cartao Facebook EN'],
+  ['fbCardSub', 'Subtitulo Facebook PT'],
+  ['fbCardSubEn', 'Subtitulo Facebook EN'],
+  ['seoTitle', 'Titulo SEO PT'],
+  ['seoTitleEn', 'Titulo SEO EN'],
+  ['seoDesc', 'Descricao SEO PT'],
+  ['seoDescEn', 'Descricao SEO EN'],
+  ['keywords', 'Palavras-chave SEO']
+];
+const SECTION_COPY = [
+  ['servicesEyebrow', 'Servicos - etiqueta'],
+  ['servicesTitle', 'Servicos - titulo'],
+  ['servicesLead', 'Servicos - descricao'],
+  ['productsEyebrow', 'Produtos - etiqueta'],
+  ['productsTitle', 'Produtos - titulo'],
+  ['productsLead', 'Produtos - descricao'],
+  ['worksEyebrow', 'Trabalhos - etiqueta'],
+  ['worksTitle', 'Trabalhos - titulo'],
+  ['worksLead', 'Trabalhos - descricao'],
+  ['videosEyebrow', 'Videos - etiqueta'],
+  ['videosTitle', 'Videos - titulo'],
+  ['videosLead', 'Videos - descricao'],
+  ['processEyebrow', 'Processo - etiqueta'],
+  ['processTitle', 'Processo - titulo'],
+  ['processLead', 'Processo - descricao'],
+  ['partnersEyebrow', 'Parceiros - etiqueta'],
+  ['partnersTitle', 'Parceiros - titulo'],
+  ['socialEyebrow', 'Redes - etiqueta'],
+  ['socialTitle', 'Redes - titulo'],
+  ['socialLead', 'Redes - descricao'],
+  ['contactEyebrow', 'Contacto - etiqueta'],
+  ['contactTitle', 'Contacto - titulo'],
+  ['contactLead', 'Contacto - descricao'],
+  ['formTitle', 'Formulario - titulo'],
+  ['formLead', 'Formulario - descricao'],
+  ['footerMade', 'Rodape - "feito em"']
+];
+
+function copyForm() {
+  const c = catalog.company || {};
+  const copy = catalog.copy || {};
+  const hero = COPY_FIELDS.map(([k, lab]) => field(lab, /Lead|Sub|Desc|Blurb|Text|Ring|marquee/i.test(k) ? area('company.' + k, c[k]) : inp('company.' + k, c[k]))).join('');
+  const sections = SECTION_COPY.map(([k, lab]) => {
+    const row = copy[k] || {};
+    return `<div class="row">${field(lab + ' PT', `<input data-copy="${k}" data-lang="pt" value="${esc(row.pt || '')}" />`)}${field(lab + ' EN', `<input data-copy="${k}" data-lang="en" value="${esc(row.en || '')}" />`)}</div>`;
+  }).join('');
+  return `<div class="grid"><div class="card"><h3 style="margin:0 0 10px">Hero, slogan e SEO</h3>${hero}</div><div class="card"><h3 style="margin:0 0 10px">Seccoes da pagina</h3>${sections}</div></div>`;
+}
+
+function listForm(key, renderer, addLabel) {
+  const items = catalog[key] || [];
+  return `<div class="cards" data-list="${key}">
+    ${items.map((item, i) => renderer(item, i)).join('')}
+  </div>
+  <div class="actions" style="margin-top:14px">
+    <button type="button" class="btn btn-grad" data-add="${key}">${addLabel}</button>
+  </div>`;
+}
+
+function catSelect(val) {
+  const cats = (catalog.services || []).map((s) => ({ id: s.id || s.name, label: s.name || s.id }));
+  const list = cats.length ? cats : CATS;
+  return `<select data-k="cat">${list.map((c) => `<option value="${c.id}" ${c.id === val ? 'selected' : ''}>${c.label}</option>`).join('')}</select>`;
+}
+
+function productCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${thumb(item.img)}
+    ${uploadBtn('products', 'img')}
+    ${field('Nome PT', `<input data-k="name" value="${esc(item.name || '')}" />`)}
+    ${field('Nome EN', `<input data-k="nameEn" value="${esc(item.nameEn || '')}" />`)}
+    ${field('Descricao PT', `<textarea data-k="desc">${esc(item.desc || '')}</textarea>`)}
+    ${field('Descricao EN', `<textarea data-k="descEn">${esc(item.descEn || '')}</textarea>`)}
+    ${field('Categoria', catSelect(item.cat))}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+function workCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${thumb(item.img)}
+    ${uploadBtn('works', 'img')}
+    ${field('Nome PT', `<input data-k="name" value="${esc(item.name || '')}" />`)}
+    ${field('Nome EN', `<input data-k="nameEn" value="${esc(item.nameEn || '')}" />`)}
+    ${field('Descricao PT', `<textarea data-k="desc">${esc(item.desc || '')}</textarea>`)}
+    ${field('Descricao EN', `<textarea data-k="descEn">${esc(item.descEn || '')}</textarea>`)}
+    ${field('Categoria', catSelect(item.cat))}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+function processCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${field('Titulo PT', `<input data-k="title" value="${esc(item.title || '')}" />`)}
+    ${field('Titulo EN', `<input data-k="titleEn" value="${esc(item.titleEn || '')}" />`)}
+    ${field('Descricao PT', `<textarea data-k="desc">${esc(item.desc || '')}</textarea>`)}
+    ${field('Descricao EN', `<textarea data-k="descEn">${esc(item.descEn || '')}</textarea>`)}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+function videoCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${thumb(item.thumb)}
+    ${uploadBtn('video', 'thumb')}
+    ${thumb(item.src, true)}
+    ${uploadBtn('video', 'src')}
+    ${field('Titulo PT', `<input data-k="name" value="${esc(item.name || '')}" />`)}
+    ${field('Titulo EN', `<input data-k="nameEn" value="${esc(item.nameEn || '')}" />`)}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+function partnerCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${thumb(item.img)}
+    ${uploadBtn('partners', 'img')}
+    ${field('Nome', `<input data-k="name" value="${esc(item.name || '')}" />`)}
+    ${field('Site', `<input data-k="url" value="${esc(item.url || '')}" />`)}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+function iconSelect(val) {
+  const cur = val || '';
+  return `<select data-k="icon"><option value="" ${cur ? '' : 'selected'}>Automatico (pelo nome)</option>${ICONS.map(([id, lab]) => `<option value="${id}" ${id === cur ? 'selected' : ''}>${lab}</option>`).join('')}</select>`;
+}
+function serviceCard(item, i) {
+  return `<article class="card" data-i="${i}">
+    ${field('Icone no site', iconSelect(item.icon || item.id))}
+    ${field('ID (para filtros: grafica, serigrafia, desporto...)', `<input data-k="id" value="${esc(item.id || '')}" />`)}
+    ${field('Nome PT', `<input data-k="name" value="${esc(item.name || '')}" />`)}
+    ${field('Nome EN', `<input data-k="nameEn" value="${esc(item.nameEn || '')}" />`)}
+    ${field('Descricao PT', `<textarea data-k="desc">${esc(item.desc || '')}</textarea>`)}
+    ${field('Descricao EN', `<textarea data-k="descEn">${esc(item.descEn || '')}</textarea>`)}
+    ${field('Itens PT (um por linha)', `<textarea data-k="items">${esc((item.items || []).join('\n'))}</textarea>`)}
+    ${field('Itens EN (um por linha)', `<textarea data-k="itemsEn">${esc((item.itemsEn || []).join('\n'))}</textarea>`)}
+    <button type="button" class="btn btn-danger" data-del>Remover</button>
+  </article>`;
+}
+
+function hoursForm() {
+  const h = catalog.hours || {};
+  return `<div class="card hours">${DAYS.map(([id, name]) => {
+    const row = h[id] || {};
+    return `<div class="hours-row">
+      <strong>${name}</strong>
+      <input data-day="${id}" data-which="open" type="time" value="${esc(row.open || '')}" />
+      <input data-day="${id}" data-which="close" type="time" value="${esc(row.close || '')}" />
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function securityForm() {
+  return `<div class="grid" style="max-width:520px">
+    <form class="card" id="pw-form">
+      ${field('Palavra-passe actual', '<input name="current" type="password" required />')}
+      ${field('Nova palavra-passe', '<input name="next" type="password" minlength="6" required />')}
+      <button class="btn btn-grad" type="submit">Atualizar palavra-passe</button>
+    </form>
+    <div class="card">
+      <h3 style="margin:0">Codigo de recuperacao</h3>
+      <p class="hint" style="margin:8px 0 12px">Se esquecer a senha, use este codigo na janela de login. Guarde-o fora do computador. Ao gerar um novo, o anterior deixa de funcionar.</p>
+      <div class="codebox" id="rec-display">${esc(sessionStorage.getItem('gk-recovery-once') || '********')}</div>
+      <div class="actions">
+        <button type="button" class="btn btn-grad" id="gen-recovery">Gerar novo codigo</button>
+      </div>
+      <p class="okmsg" id="rec-note"></p>
+    </div>
+  </div>`;
+}
+
+function collect() {
+  const clone = JSON.parse(JSON.stringify(catalog));
+  if (tab === 'empresa' || tab === 'identidade' || tab === 'textos') {
+    $$('[data-k]').forEach((el) => {
+      const path = el.dataset.k.split('.');
+      let cur = clone;
+      path.slice(0, -1).forEach((k) => { cur[k] = cur[k] || {}; cur = cur[k]; });
+      const last = path[path.length - 1];
+      let val = el.value;
+      if (last === 'phones') val = val.split(',').map((s) => s.trim()).filter(Boolean);
+      if (['years', 'projects', 'clients', 'productTypes'].includes(last)) val = Number(val) || 0;
+      cur[last] = val;
+    });
+    if (tab === 'textos') {
+      clone.copy = clone.copy || {};
+      $$('[data-copy]').forEach((el) => {
+        clone.copy[el.dataset.copy] = clone.copy[el.dataset.copy] || {};
+        clone.copy[el.dataset.copy][el.dataset.lang] = el.value;
+      });
+    }
+  } else if (['produtos', 'trabalhos', 'videos', 'parceiros', 'servicos', 'processo'].includes(tab)) {
+    const key = { produtos: 'products', trabalhos: 'works', videos: 'videos', parceiros: 'partners', servicos: 'services', processo: 'process' }[tab];
+    clone[key] = $$('#panels [data-i]').map((card) => {
+      const item = Object.assign({}, (catalog[key] || [])[+card.dataset.i] || {});
+      $$('[data-k]', card).forEach((el) => {
+        if (el.dataset.k === 'items' || el.dataset.k === 'itemsEn') {
+          item[el.dataset.k] = el.value.split('\n').map((s) => s.trim()).filter(Boolean);
+        } else item[el.dataset.k] = el.value;
+      });
+      return item;
+    });
+  } else if (tab === 'horario') {
+    clone.hours = clone.hours || {};
+    $$('[data-day]').forEach((el) => {
+      const id = el.dataset.day;
+      clone.hours[id] = clone.hours[id] || {};
+      clone.hours[id][el.dataset.which] = el.value;
+    });
+  }
+  catalog = clone;
+}
+
+function defaults(key) {
+  if (key === 'products' || key === 'works') return { img: '', name: 'Novo item', nameEn: 'New item', desc: '', descEn: '', cat: 'grafica' };
+  if (key === 'videos') return { thumb: '', src: '', name: 'Novo video', nameEn: 'New video' };
+  if (key === 'partners') return { img: '', name: 'Parceiro', url: '#' };
+  if (key === 'process') return { title: 'Novo passo', titleEn: 'New step', desc: '', descEn: '' };
+  return { id: 'servico', icon: '', name: 'Novo servico', nameEn: 'New service', desc: '', descEn: '', items: [], itemsEn: [] };
+}
+
+function bindPanel(root) {
+  root.onclick = async (e) => {
+    const add = e.target.closest('[data-add]');
+    if (add) {
+      collect();
+      const key = add.dataset.add;
+      catalog[key] = catalog[key] || [];
+      catalog[key].push(defaults(key));
+      render();
+      return;
+    }
+    const del = e.target.closest('[data-del]');
+    if (del) {
+      collect();
+      const card = del.closest('[data-i]');
+      const key = card.closest('[data-list]').dataset.list;
+      catalog[key].splice(+card.dataset.i, 1);
+      render();
+    }
+  };
+  root.oninput = (e) => {
+    const el = e.target;
+    if (!el || !el.dataset || !el.dataset.k) return;
+    if (el.type === 'color') {
+      const sib = el.parentElement && el.parentElement.querySelector('input[type=text][data-k="' + el.dataset.k + '"]');
+      if (sib) sib.value = el.value;
+    } else if (el.type === 'text' && el.dataset.k.indexOf('theme') !== -1 && /^#[0-9a-fA-F]{6}$/.test(el.value)) {
+      const sib = el.parentElement && el.parentElement.querySelector('input[type=color][data-k="' + el.dataset.k + '"]');
+      if (sib) sib.value = el.value;
+    }
+  };
+  root.onchange = async (e) => {
+    const input = e.target.closest('[data-upload]');
+    if (!input || !input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const body = new FormData();
+    body.append('folder', input.dataset.upload);
+    body.append('file', file);
+    toast('A enviar ficheiro...');
+    try {
+      const data = await api('/api/upload', { method: 'POST', headers: headers(), body });
+      collect();
+      const card = input.closest('[data-i]');
+      if (card) {
+        const key = card.closest('[data-list]').dataset.list;
+        catalog[key][+card.dataset.i][input.dataset.target] = data.path;
+      } else {
+        const [a, b] = input.dataset.target.split('.');
+        catalog[a][b] = data.path;
+      }
+      render();
+      toast('Ficheiro atualizado.', 'ok');
+    } catch (err) {
+      toast(err.message, 'err');
+    }
+  };
+  const gen = $('#gen-recovery');
+  if (gen) gen.onclick = async () => {
+    try {
+      const data = await api('/api/recovery', { method: 'POST', headers: headers() });
+      $('#rec-display').textContent = data.code;
+      $('#rec-note').textContent = 'Guarde este codigo agora. Nao voltara a ser mostrado completo.';
+      toast('Novo codigo gerado.', 'ok');
+    } catch (err) { toast(err.message, 'err'); }
+  };
+  const pw = $('#pw-form');
+  if (pw) pw.onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(pw);
+    try {
+      await api('/api/password', {
+        method: 'POST',
+        headers: headers({ 'Content-Type': 'application/json' }),
+        body: JSON.stringify({ current: fd.get('current'), next: fd.get('next') })
+      });
+      toast('Palavra-passe atualizada.', 'ok');
+      pw.reset();
+    } catch (err) { toast(err.message, 'err'); }
+  };
+}
+
+async function load() {
+  catalog = await api('/api/catalog', { headers: headers() });
+  catalog.company = catalog.company || {};
+  catalog.hours = catalog.hours || {};
+  ['products', 'works', 'partners', 'services', 'videos', 'process'].forEach((k) => { catalog[k] = catalog[k] || []; });
+  catalog.copy = catalog.copy || {};
+  const c = catalog.company || {};
+  if (c.logoWhite || c.logoNav || c.logo) {
+    $$('.side img, .login-card img').forEach((img) => { img.src = c.logoWhite || c.logoNav || c.logo; });
+  }
+  if (c.name) document.title = 'Painel ' + c.name;
+  render();
+}
+
+$('#toggle-pw').onclick = () => {
+  const el = $('#password');
+  el.type = el.type === 'password' ? 'text' : 'password';
+  $('#toggle-pw').textContent = el.type === 'password' ? 'mostrar' : 'ocultar';
+};
+$('#show-recover').onclick = () => {
+  $('#login-form').classList.add('hidden');
+  $('#recover-form').classList.remove('hidden');
+  $('#recover-err').textContent = '';
+  $('#recover-ok').textContent = '';
+};
+$('#back-login').onclick = () => {
+  $('#recover-form').classList.add('hidden');
+  $('#login-form').classList.remove('hidden');
+};
+$('#login-form').onsubmit = async (e) => {
+  e.preventDefault();
+  $('#login-err').textContent = '';
+  try {
+    const data = await api('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('#password').value })
+    });
+    token = data.token;
+    sessionStorage.setItem('gk-admin-token', token);
+    showApp();
+    await load();
+    if (data.recoveryCode) {
+      sessionStorage.setItem('gk-recovery-once', data.recoveryCode);
+      toast('Codigo de recuperacao: ' + data.recoveryCode + ' — copie agora (aba Seguranca).', 'ok');
+    }
+  } catch (err) {
+    $('#login-err').textContent = err.message;
+  }
+};
+$('#recover-form').onsubmit = async (e) => {
+  e.preventDefault();
+  $('#recover-err').textContent = '';
+  $('#recover-ok').textContent = '';
+  try {
+    const data = await api('/api/recover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: $('#rec-code').value, next: $('#rec-next').value })
+    });
+    $('#recover-ok').textContent = 'Palavra-passe redefinida. Novo codigo: ' + data.recovery + ' — copie agora.';
+    $('#rec-code').value = '';
+    $('#rec-next').value = '';
+  } catch (err) {
+    $('#recover-err').textContent = err.message;
+  }
+};
+
+$('#logout').onclick = async () => {
+  try { await api('/api/logout', { method: 'POST', headers: headers() }); } catch (e) {}
+  token = '';
+  sessionStorage.removeItem('gk-admin-token');
+  showLogin();
+};
+$('#reload').onclick = () => load().catch((err) => toast(err.message, 'err'));
+$('#save').onclick = async () => {
+  collect();
+  const hasContent = (catalog.company && catalog.company.name) ||
+    (catalog.products && catalog.products.length) ||
+    (catalog.services && catalog.services.length);
+  if (!hasContent) {
+    toast('Nada para guardar: recarregue o painel.', 'err');
+    return;
+  }
+  try {
+    await api('/api/catalog', {
+      method: 'PUT',
+      headers: headers({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(catalog)
+    });
+    toast('Alteracoes guardadas. Recarregue o site.', 'ok');
+  } catch (err) { toast(err.message, 'err'); }
+};
+$$('.nav-btn[data-tab]').forEach((btn) => {
+  btn.onclick = () => {
+    if (catalog) collect();
+    tab = btn.dataset.tab;
+    render();
+  };
+});
+
+(async () => {
+  if (!token) return;
+  try {
+    const s = await api('/api/session', { headers: headers() });
+    if (!s.ok) return showLogin();
+    showApp();
+    await load();
+  } catch (e) { showLogin(); }
+})();
+</script>
+</body>
+</html>
